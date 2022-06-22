@@ -6,41 +6,58 @@ import { Navigate, useNavigate } from "react-router-dom";
 import SearchBar from "../../components/SearchBar";
 function Home() {
   const navigate = useNavigate();
-  const [pokemons, setPokemons] = useState([]);
-  const [data, setData] = useState();
+  const [pokemon, setPokemon] = useState([]);
+  const [renderData, setRenderData] = useState([])
+  const [search, setSearch] = useState("")
   useEffect(() => {
     api
-      .get("/pokemon/?limit=100000&offset=0")
+      .get("/pokemon/?limit=100000&offset=0") //100000
       .then((res) => {
-        setPokemons([res.data.results]);
+        
+        setPokemon([res.data.results]);
       })
       .catch((err) => console.log(err));
   }, []);
+  function SearchPokemon(){
+    api.get(`/pokemon/${search}`).then((res)=> {
+      setPokemon([res.data]);
+      
+    }).catch((err)=> {
+      if(err.response.status == 404){
+        alert("Pokemon não encontrado")
+      }
+    })}
   return (
     <Cardbox>
-      <SearchBar />
+      <SearchBar setSearch={setSearch} />
+      <button onClick={()=> SearchPokemon()} >Search</button>
       <Container>
-        {pokemons.map((slices) => {
+        
+        {
+         pokemon.map((slices) => {
           let types;
-          return slices.map((pokemons) => {
-            api.get(`${pokemons.url.split("v2")[1]}`).then((res) => {
+          return slices.map((pokemon) => {
+            api.get(`${pokemon.url.split("v2")[1]}`).then((res) => {
               types = res.data.types;
               console.log("types", types);
             });
             return (
               <PokeCard
                 onClick={() =>
-                  navigate(`/pokemon/${pokemons.url.split("/")[6]}`)
+
+                  navigate(`/pokemon/${pokemon.url.split("/")[6]}`)
                 }
-                name={pokemons.name}
+                name={pokemon.name}
                 image={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${
-                  pokemons.url.split("/")[6]
+                  pokemon.url.split("/")[6]
                 }.png`}
                 types={[types]}
               ></PokeCard>
             );
           });
         })}
+              
+        
       </Container>
     </Cardbox>
   );
