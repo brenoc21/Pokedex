@@ -11,7 +11,7 @@ export default function PokeCard({ name, image, types, onClick }) {
       <label>{capitalizeFirstLetter(name)}</label>
       <div>
         {types.map((type) => {
-          return <label>{type}</label>;
+          return <label key={type}>{type}</label>;
         })}
       </div>
     </CardContainer>

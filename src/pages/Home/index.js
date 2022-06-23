@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
 import PokeCard from "../../components/Pokecard";
 import api from "../../services/api";
-import { Cardbox, Container } from "./styles.js";
+import { Cardbox, Container, ShinyButton } from "./styles.js";
 import { Navigate, useNavigate } from "react-router-dom";
 import SearchBar from "../../components/SearchBar";
+import {AiOutlineStar, AiFillStar} from 'react-icons/ai'
+import {FaRegHourglass, FaHourglass} from 'react-icons/fa'
 function Home() {
   const navigate = useNavigate();
   const [pokemon, setPokemon] = useState([]);
   const [renderData, setRenderData] = useState([]);
   const [search, setSearch] = useState("");
+  const [shiny, setShiny] = useState(false)
+  const [old, setOld] = useState(false)
   useEffect(() => {
     if (search != "") {
       console.log("renderData:", renderData);
@@ -20,7 +24,7 @@ function Home() {
   }, [search, pokemon]);
   useEffect(() => {
     api
-      .get("/pokemon/?limit=200&offset=0") //100000
+      .get("/pokemon/?limit=151&offset=0") //100000
       .then((res) => {
         setPokemon([res.data.results]);
       })
@@ -42,6 +46,8 @@ function Home() {
   return (
     <Cardbox>
       <SearchBar setSearch={setSearch} />
+      <ShinyButton onClick={()=> setShiny(!shiny)}> {shiny ? <AiFillStar className="svg"/> : <AiOutlineStar className="svg"/>} </ShinyButton>
+      <ShinyButton onClick={()=> setOld(!old)}> {old ? <FaHourglass className="svg"/> : <FaRegHourglass className="svg"/>} </ShinyButton>
       <Container>
         {renderData.map((slices) => {
           console.log("Map: ",renderData)
@@ -56,9 +62,9 @@ function Home() {
                   navigate(`/pokemon/${pokemon.url.split("/")[6]}`)
                 }
                 name={pokemon.name}
-                image={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${
-                  pokemon.url.split("/")[6]
-                }.png`}
+                image={shiny ? 
+                  old ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${pokemon.url.split("/")[6]}.png` : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/shiny/${pokemon.url.split("/")[6]}.png`
+                  : old ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.url.split("/")[6]}.png` : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${pokemon.url.split("/")[6]}.png` }
                 types={[types]}
               ></PokeCard>
             );
@@ -70,3 +76,5 @@ function Home() {
 }
 
 export default Home;
+//"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/shiny/${pokemon.url.split("/")[6]}.png"
+//"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${pokemon.url.split("/")[6]}.png"
