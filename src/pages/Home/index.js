@@ -12,20 +12,21 @@ function Home() {
   useEffect(() => {
     if (search != "") {
       console.log("renderData:", renderData);
-      setRenderData(pokemon.filter((poke) => poke.includes(search)));
-      console.log(pokemon.filter((poke) => poke.includes(search)));
+      setRenderData(pokemon && pokemon.map(item=> item.filter((poke) => poke.name.includes(search))));
+      //console.log(pokemon.map(item=> item.filter((poke) => poke.name.includes(search))));
     } else {
-      setRenderData(pokemon);
+      setRenderData(pokemon && pokemon);
     }
-  }, [search]);
+  }, [search, pokemon]);
   useEffect(() => {
     api
-      .get("/pokemon/?limit=20&offset=0") //100000
+      .get("/pokemon/?limit=200&offset=0") //100000
       .then((res) => {
         setPokemon([res.data.results]);
       })
       .catch((err) => console.log(err));
   }, []);
+  
   function SearchPokemon() {
     api
       .get(`/pokemon/${search}`)
@@ -43,6 +44,7 @@ function Home() {
       <SearchBar setSearch={setSearch} />
       <Container>
         {renderData.map((slices) => {
+          console.log("Map: ",renderData)
           let types;
           return slices.map((pokemon) => {
             api.get(`${pokemon.url.split("v2")[1]}`).then((res) => {

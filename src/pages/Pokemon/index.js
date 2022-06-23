@@ -12,7 +12,7 @@ export default function Pokemon() {
       .get(`/pokemon/${id}`)
       .then((res) => {
         setPokemon(res.data);
-        console.log(res.data.stats)
+        console.log(res.data.types)
       })
       .catch((err) => console.log(err));
   }, []);
@@ -28,9 +28,12 @@ export default function Pokemon() {
       <img
         src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${id}.png`}
       ></img>
+      <p>{pokemon && pokemon.types[0].type.name}</p>
       </PicContainer>
       <StatMeter stats={pokemon && pokemon.stats}/>
+      
       </PokemonContentContainer>
+      
       </Container>
     </PokemonPageContainer>
   );
