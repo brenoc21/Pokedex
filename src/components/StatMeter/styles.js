@@ -14,6 +14,8 @@ gap: 0.5rem;
 `
 export const  StatMeterRow = styled.div`
 display: flex;
-gap: 1rem;
+flex-direction: column;
+height: 100%;
+justify-content: space-around;
 
 `

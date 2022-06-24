@@ -9,12 +9,12 @@ function StatMeter({stats}) {
     <StatMeterContainer>
         <p>Stats</p>
         <StatMeterRow>
-            <StatBar name={"hp"} stat={ stats && stats[0].base_stat/255}/>
-            <StatBar name={"atk"} stat={ stats && stats[1].base_stat/255}/>
-            <StatBar name={"def"} stat={ stats && stats[2].base_stat/255}/>
-            <StatBar name={"spa"} stat={ stats && stats[3].base_stat/255}/>
-            <StatBar name={"spd"} stat={ stats && stats[4].base_stat/255}/>
-            <StatBar name={"spe"} stat={ stats && stats[5].base_stat/255}/>
+            <StatBar name={"Health"} stat={ stats && stats[0].base_stat}/>
+            <StatBar name={"Attack"} stat={ stats && stats[1].base_stat}/>
+            <StatBar name={"Defense"} stat={ stats && stats[2].base_stat}/>
+            <StatBar name={"SP.Attack"} stat={ stats && stats[3].base_stat}/>
+            <StatBar name={"SP.Defense"} stat={ stats && stats[4].base_stat}/>
+            <StatBar name={"Speed"} stat={ stats && stats[5].base_stat}/>
         </StatMeterRow>
     </StatMeterContainer>
   );

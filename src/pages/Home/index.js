@@ -13,6 +13,7 @@ function Home() {
   const [search, setSearch] = useState("");
   const [shiny, setShiny] = useState(false)
   const [old, setOld] = useState(false)
+  const [types, setTypes] = useState([])
   useEffect(() => {
     if (search != "") {
       console.log("renderData:", renderData);
@@ -24,7 +25,7 @@ function Home() {
   }, [search, pokemon]);
   useEffect(() => {
     api
-      .get("/pokemon/?limit=151&offset=0") //100000
+      .get("/pokemon/?limit=150&offset=0") //100000
       .then((res) => {
         setPokemon([res.data.results]);
       })
@@ -50,12 +51,12 @@ function Home() {
       <ShinyButton onClick={()=> setOld(!old)}> {old ? <FaHourglass className="svg"/> : <FaRegHourglass className="svg"/>} </ShinyButton>
       <Container>
         {renderData.map((slices) => {
-          console.log("Map: ",renderData)
           let types;
           return slices.map((pokemon) => {
             api.get(`${pokemon.url.split("v2")[1]}`).then((res) => {
-              types = res.data.types;
-            });
+              setTypes(res.data.types)
+              
+            }).catch((err)=> {console.log(err)});
             return (
               <PokeCard
                 onClick={() =>
@@ -66,7 +67,9 @@ function Home() {
                   old ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/${pokemon.url.split("/")[6]}.png` : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/shiny/${pokemon.url.split("/")[6]}.png`
                   : old ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.url.split("/")[6]}.png` : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${pokemon.url.split("/")[6]}.png` }
                 types={[types]}
-              ></PokeCard>
+              >
+                
+              </PokeCard>
             );
           });
         })}

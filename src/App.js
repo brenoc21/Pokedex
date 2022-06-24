@@ -15,3 +15,6 @@ function App() {
 }
 
 export default App;
+
+// `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.url.split("/")[6]}.png`
+//`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${poke.url.split("/")[6]}.png` Normal

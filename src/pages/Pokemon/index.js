@@ -43,13 +43,24 @@ export default function Pokemon() {
   }, [pokemon]);
   function handleEvoChain(chain){
     let current = chain.evolves_to[0]
+    console.log("current", chain.species.name)
+    if(chain.species.name === "eevee"){
+      current = chain.evolves_to
+      console.log(current)
+      let eeveeArray = [{name: chain.species.name, url: chain.species.url}]
+      current.map((evo)=> {
+        eeveeArray.push({name: evo.species.name, url: evo.species.url})
+         console.log("evo:", evo)
+      }) 
+      return eeveeArray
+    }else{
     let array = [{name: chain.species.name, url: chain.species.url}]
      while(current != undefined){
       array.push({name: current.species.name, url: current.species.url})
       current = current.evolves_to[0]
      }
      return array
-    
+    }
   }
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -88,7 +99,7 @@ export default function Pokemon() {
                 return poke != undefined ? <EvolutionCard>
                   <div className="imgContainer">
 
-                  <img src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${poke.url.split("/")[6]}.png`}/>
+                  <img src={ `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${poke.url.split("/")[6]}.png`}/>
                   </div>
                   <p>{poke.name}</p></EvolutionCard> : null;
               })}

@@ -56,7 +56,7 @@ margin-left: 1rem;
 background-color: #f2f2f2;
 img {
     max-width: 20rem;
-    
+    filter: drop-shadow(4px 3px 5px rgba(0,0,0, 0.25))
   }
 `
 export const TypeSection = styled.div`
@@ -82,6 +82,7 @@ gap: 1rem;
   align-items: center;
   border-radius: 50%;
   background-color: #aaaaaa;
+  img{filter: drop-shadow(4px 3px 5px rgba(0,0,0, 0.25))}
 }
 img{
   width: 100%;
@@ -91,8 +92,10 @@ img{
 export const EvolutionSection = styled.div`
 display: flex;
 flex-direction: row;
+flex-wrap: wrap;
 align-items: center;
 justify-content: space-around;
+gap: 1rem;
 background-color: #EEEEEE;
 padding: 1rem;
 `
