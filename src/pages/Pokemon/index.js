@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import StatMeter from "../../components/StatMeter";
 import TypeBox from "../../components/TypeBox";
 import api from "../../services/api";
@@ -17,6 +17,7 @@ export default function Pokemon() {
   const { id } = useParams();
   const [pokemon, setPokemon] = useState();
   const [evoTree, setEvoTree] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
     api
       .get(`/pokemon/${id}`)
@@ -25,43 +26,26 @@ export default function Pokemon() {
         console.log(res.data);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [id]);
   useEffect(() => {
     pokemon &&
       api.get(`${pokemon.species.url}`).then((res) =>
         api
           .get(res.data.evolution_chain.url)
           .then((res) => {
-            setEvoTree(handleEvoChain(res.data.chain))
-            console.log(evoTree)
-          
+            setEvoTree(handleEvoChain(res.data.chain));
           })
-          .then(() => {
-            console.log("tree",evoTree);
-          })
+          .then(() => {})
       );
   }, [pokemon]);
-  function handleEvoChain(chain){
-    let current = chain.evolves_to[0]
-    console.log("current", chain.species.name)
-    if(chain.species.name === "eevee"){
-      current = chain.evolves_to
-      console.log(current)
-      let eeveeArray = [{name: chain.species.name, url: chain.species.url}]
-      current.map((evo)=> {
-        eeveeArray.push({name: evo.species.name, url: evo.species.url})
-         console.log("evo:", evo)
-      }) 
-      return eeveeArray
-    }else{
-    let array = [{name: chain.species.name, url: chain.species.url}]
-     while(current != undefined){
-      array.push({name: current.species.name, url: current.species.url})
-      current = current.evolves_to[0]
-     }
-     return array
-    }
+  function handleEvoChain(chain) {
+    let array = [{ name: chain.species.name, url: chain.species.url }];
+    chain.evolves_to.map((evo) => {
+      array = array.concat(handleEvoChain(evo));
+    });
+    return array;
   }
+  //}
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
@@ -86,7 +70,6 @@ export default function Pokemon() {
               <div className="typeRow">
                 {pokemon &&
                   pokemon.types.map((types) => {
-                    console.log("aaaaa");
                     return (
                       <TypeBox key={types.type.name} Type={types.type.name} />
                     );
@@ -94,15 +77,28 @@ export default function Pokemon() {
               </div>
             </TypeSection>
             <EvolutionSection>
-              {evoTree && evoTree.map((poke) => {
-                console.log("poke:", poke)
-                return poke != undefined ? <EvolutionCard>
-                  <div className="imgContainer">
-
-                  <img src={ `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${poke.url.split("/")[6]}.png`}/>
-                  </div>
-                  <p>{poke.name}</p></EvolutionCard> : null;
-              })}
+              {evoTree &&
+                evoTree.map((poke) => {
+                  return poke != undefined ? (
+                    <EvolutionCard>
+                      <div
+                        onClick={() =>
+                          navigate(`/pokemon/${poke.url.split("/")[6]}`, {
+                            replace: true,
+                          })
+                        }
+                        className="imgContainer"
+                      >
+                        <img
+                          src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/${
+                            poke.url.split("/")[6]
+                          }.png`}
+                        />
+                      </div>
+                      <p>{capitalizeFirstLetter(poke.name)}</p>
+                    </EvolutionCard>
+                  ) : null;
+                })}
             </EvolutionSection>
           </PokemonCharacContainer>
         </div>
